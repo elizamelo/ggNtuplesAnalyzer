@@ -15,9 +15,26 @@ cd ggNtuplesAnalyzer/
 ./run_ana_ggNtuplesAnalyzer.sh
 ```
 
-Histograms at:
+This will select dimuon pairs with:
+- event pass HLT_IsoMu24_v* HLT trigger path
+- leading (tight) muon: pt > 27.0 and |eta| < 2.4
+- trailing (tight) muon: pt > 2.0 and |eta| < 2.4
+- muons with opposite charge
+
+Histograms files can be found at:
 ```
 ls -lha outputFiles
+```
+
+### Plotting (i.e. dimuon mass distribution):
+Load root:
+```
+root -l outputFiles/histos_ggNtuplesAnalyzer.root
+```
+
+Inside root:
+```
+((TH1D*)_file0->Get("h_DiMuon_Mass"))->Draw()
 ```
 
 ## Producing the nTuples
