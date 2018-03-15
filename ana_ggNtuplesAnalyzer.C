@@ -28,13 +28,14 @@ void ana_ggNtuplesAnalyzer(vector<string> ggNtuplesFiles, int nFiles = -1, strin
 	if (nFiles > 0) {
 		ggNtuplesFiles.resize(nFiles);	
 	}
+	// more info: https://root.cern.ch/7-using-ttreereader
 	TTreeReader * dataReader = ggNtuplesFilesReader( ggNtuplesFiles, "ggNtuplizer/EventTree" );
 	TTree * dataTree = dataReader->GetTree();
 
 	
 
 	////////////////////////////////////////////////////////////////////
-	// active branchs and define readers
+	// activate branchs and define readers
 	dataTree->SetBranchStatus("*",0);
 
 	dataTree->SetBranchStatus("HLTEleMuX",1);
@@ -86,6 +87,7 @@ void ana_ggNtuplesAnalyzer(vector<string> ggNtuplesFiles, int nFiles = -1, strin
 
 		////////////////////////////////////////////////////////////////////
 		// trigger selection 
+		// more info: https://github.com/cmkuo/ggAnalysis/blob/master/ggNtuplizer/plugins/ggNtuplizer_globalEvent.cc#L151
 		auto goodTriggerEvt = true;
 		// goodTriggerEvt = (((*HLTEleMuX >> 8) & 1) == 1) ? true : false; // HLT_Mu17_Photon30_CaloIdL_L1ISO_v*
 		goodTriggerEvt = (((*HLTEleMuX >> 19) & 1) == 1) ? true : false; // HLT_IsoMu24_v*
@@ -105,6 +107,7 @@ void ana_ggNtuplesAnalyzer(vector<string> ggNtuplesFiles, int nFiles = -1, strin
 			for (int iMuon = 0; iMuon < *nMu; iMuon++) { //loop over muons looking for the leading muon
 				if (muPt[iMuon] > 27.0 && fabs(muEta[iMuon]) < 2.4) { // pt > 27 and Abs(Eta) < 2.4
 					leadingMuonIndex = iMuon;
+					// more info: https://github.com/cmkuo/ggAnalysis/blob/master/ggNtuplizer/plugins/ggNtuplizer_muons.cc#L170
 					leadingMuonIsTight = (((muIDbit[iMuon] >> 2) & 1) == 1) ? true : false; // is tight muon
 					nGoodMuons++;
 					break;
@@ -117,6 +120,7 @@ void ana_ggNtuplesAnalyzer(vector<string> ggNtuplesFiles, int nFiles = -1, strin
 						if (muPt[iMuon] > 2.0 && fabs(muEta[iMuon]) < 2.4) { // pt > 27 and Abs(Eta) < 2.4
 							if (muCharge[iMuon] * muCharge[leadingMuonIndex] < 0) { // the muons should have opposite charges
 								trailingMuonIndex = iMuon;
+								// more info: https://github.com/cmkuo/ggAnalysis/blob/master/ggNtuplizer/plugins/ggNtuplizer_muons.cc#L170
 								trailingMuonIsTight = (((muIDbit[iMuon] >> 2) & 1) == 1) ? true : false; // is tight muon
 								nGoodMuons++;
 								break;
