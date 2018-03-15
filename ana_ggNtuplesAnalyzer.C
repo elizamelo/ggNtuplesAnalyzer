@@ -70,7 +70,6 @@ void ana_ggNtuplesAnalyzer(vector<string> ggNtuplesFiles, int nFiles = -1, strin
 	////////////////////////////////////////////////////////////////////
 	// numer of entries
 	auto totalEvts = dataTree->GetEntries();
-	// auto printEvery = 100000;
 	auto printEvery = 10000;
 	cout << "\nN. Entries (" << outFileAppend <<  "): " << totalEvts << endl;
 	cout << "\nPrinting every: " << printEvery << " events" << endl;
@@ -104,9 +103,9 @@ void ana_ggNtuplesAnalyzer(vector<string> ggNtuplesFiles, int nFiles = -1, strin
 			bool trailingMuonIsTight = false; //leading muon id (tight)
 
 			for (int iMuon = 0; iMuon < *nMu; iMuon++) { //loop over muons looking for the leading muon
-				if (muPt[iMuon] > 27.0 && fabs(muEta[iMuon]) < 2.4) {
+				if (muPt[iMuon] > 27.0 && fabs(muEta[iMuon]) < 2.4) { // pt > 27 and Abs(Eta) < 2.4
 					leadingMuonIndex = iMuon;
-					leadingMuonIsTight = (((muIDbit[iMuon] >> 2) & 1) == 1) ? true : false; // is tight muon?
+					leadingMuonIsTight = (((muIDbit[iMuon] >> 2) & 1) == 1) ? true : false; // is tight muon
 					nGoodMuons++;
 					break;
 				}
@@ -115,10 +114,10 @@ void ana_ggNtuplesAnalyzer(vector<string> ggNtuplesFiles, int nFiles = -1, strin
 			if (nGoodMuons > 0 ) {
 				if (leadingMuonIndex + 1 < *nMu) {
 					for (int iMuon = leadingMuonIndex + 1; iMuon < *nMu; iMuon++) { //loop over muons looking for the trailing muon
-						if (muPt[iMuon] > 2.0 && fabs(muEta[iMuon]) < 2.4) {
-							if (muCharge[iMuon] * muCharge[leadingMuonIndex] < 0) {
+						if (muPt[iMuon] > 2.0 && fabs(muEta[iMuon]) < 2.4) { // pt > 27 and Abs(Eta) < 2.4
+							if (muCharge[iMuon] * muCharge[leadingMuonIndex] < 0) { // the muons should have opposite charges
 								trailingMuonIndex = iMuon;
-								trailingMuonIsTight = (((muIDbit[iMuon] >> 2) & 1) == 1) ? true : false; // is tight muon?
+								trailingMuonIsTight = (((muIDbit[iMuon] >> 2) & 1) == 1) ? true : false; // is tight muon
 								nGoodMuons++;
 								break;
 							}
@@ -128,7 +127,7 @@ void ana_ggNtuplesAnalyzer(vector<string> ggNtuplesFiles, int nFiles = -1, strin
 			}
 
 
-
+			// pass trigger AND two good muons AND both muons are tight muons
 			if (goodTriggerEvt == true && nGoodMuons > 1 && trailingMuonIsTight == true && leadingMuonIsTight == true) {
 				//leading muon
 				auto * leadingMuon = new TLorentzVector();
@@ -139,7 +138,7 @@ void ana_ggNtuplesAnalyzer(vector<string> ggNtuplesFiles, int nFiles = -1, strin
 				trailingMuon->SetPtEtaPhiM(muPt[trailingMuonIndex], muEta[trailingMuonIndex], muPhi[trailingMuonIndex], muonMass);	
 
 				// dimuon
-				auto * dimuon = new TLorentzVector();
+				auto * dimuon = new TLorentzVector(); // dimuon = leading muon + trailing muon
 				dimuon->SetPtEtaPhiM(
 						(*leadingMuon+*trailingMuon).Pt(), 
 						(*leadingMuon+*trailingMuon).Eta(),
