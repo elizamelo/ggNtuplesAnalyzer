@@ -15,11 +15,11 @@ cd ggNtuplesAnalyzer/
 ./run_ana_ggNtuplesAnalyzer.sh
 ```
 
-This will select dimuon pairs with:
-- event pass HLT_IsoMu24_v* HLT trigger path
-- leading (tight) muon: pt > 27.0 and |eta| < 2.4
-- trailing (tight) muon: pt > 2.0 and |eta| < 2.4
-- muons with opposite charge
+This will select dimuon pairs:
+- event pass **HLT_IsoMu24** HLT Path
+- leading **(tight)** muon: **pt > 27.0** and **|eta| < 2.4**
+- trailing **(tight)** muon: **pt > 2.0** and **|eta| < 2.4**
+- muons with **opposite charge**
 
 Histograms files can be found at:
 ```
